@@ -31,7 +31,8 @@ package utilities
 			framesNumber++;  
 			if (currentTime > 1)  
 			{  
-				textField.text = "Memory :" + (System.totalMemory / 1024) / 1000;
+				textField.text = "Stars :" + Settings.MAX_STARS;
+				textField.appendText("\n" + "Memory :" + (System.totalMemory / 1024) / 1000);
 				textField.appendText("\n" + "Framerate :" + Math.floor((framesNumber/currentTime)*10.0)/10.0);
 				startTime = getTimer();  
 				framesNumber = 0;  

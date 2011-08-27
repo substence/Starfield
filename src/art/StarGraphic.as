@@ -4,6 +4,12 @@ package art
 	
 	public class StarGraphic extends Sprite
 	{
+		
+		public function StarGraphic(diameter:Number)
+		{
+			setup(diameter);
+		}
+		
 		public function setup(diameter:Number, color:uint = 0xFFFFFF):void
 		{
 			var radius:Number = diameter * .5;
