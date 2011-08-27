@@ -21,7 +21,8 @@ package
 	[SWF(width="640", height="480", frameRate="50", backgroundColor="#000000")]
 	public class StarField extends Sprite
 	{
-		public var stars:Vector.<Star>;
+		//public var stars:Vector.<Star>;
+		public var entryStar:Star;
 		public var canvas:BitmapData;
 		public var starBitmapData:BitmapData;
 		public var profilier:Profiler;
@@ -34,7 +35,7 @@ package
 			profilier = new Profiler();
 			_scaleMatrix = new Matrix();
 			canvas = new BitmapData(Settings.STAGE_WIDTH, Settings.STAGE_HEIGHT, true, 0);
-			stars = new Vector.<Star>(Settings.MAX_STARS, true);
+			//stars = new Vector.<Star>(Settings.MAX_STARS, true);
 			starBitmapData = new BitmapData(Settings.MAX_STAR_SIZE, Settings.MAX_STAR_SIZE, true, 0);
 			var starGraphic:StarGraphic = new StarGraphic();
 			starGraphic.setup(Settings.MAX_STAR_SIZE);
@@ -54,7 +55,8 @@ package
 		private function createStarPool():void
 		{
 			var i:int = 0;
-			var previousStar:Star = new Star();
+			entryStar = new Star();;
+			var previousStar:Star = entryStar;
 			do 
 			{
 				var star:Star = new Star();
@@ -62,7 +64,7 @@ package
 				previousStar.next = star;
 				previousStar = star;
 				i++
-			} while(i <Settings.MAX_STARS);
+			} while(i < Settings.MAX_STARS);
 /*			for (var i:int = 0; i <Settings.MAX_STARS ; i++) 
 			{
 				stars[i] = new Star();
@@ -81,7 +83,16 @@ package
 		{
 			canvas.lock();
 			canvas.fillRect(canvas.rect, 0x000000);
-			for (var i:int = 0; i < stars.length; i++) 
+			var star:Star = entryStar;
+			while(star)
+			{
+				star.update();
+				if (isOutOfBounds(star))
+					initializeStar(star);
+				canvas.copyPixels(starBitmapData, new Rectangle(0,0, star.size, star.size), star.position);
+				star = star.next;
+			}
+/*			for (var i:int = 0; i < stars.length; i++) 
 			{
 				var star:Star = stars[i];
 				star.update();
@@ -92,7 +103,7 @@ package
 				//_scaleMatrix.translate(star.position.x, star.position.y);
 				//canvas.draw(starBitmapData, _scaleMatrix);
 				canvas.copyPixels(starBitmapData, new Rectangle(0,0, star.size, star.size), star.position);
-			}		
+			}*/		
 			canvas.unlock();
 		}
 		
@@ -104,9 +115,6 @@ package
 			star.velocity.y = Math.sin(angle) * speed;
 			star.size = (speed / Settings.MAX_STAR_SPEED) * Settings.MAX_STAR_SIZE;
 			star.position = new Point(Settings.HALF_WIDTH + (star.velocity.x * 75), Settings.HALF_HEIGHT + (star.velocity.y * 75));
-			//star.position = new Point(Math.random() * Settings.STAGE_WIDTH, Math.random() * Settings.STAGE_HEIGHT);
-/*			star.velocity.x = -1 + Math.random() * 2;
-			star.velocity.y = -1 + Math.random() * 2;*/
 		}
 		
 		//try rect.contains
