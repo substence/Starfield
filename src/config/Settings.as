@@ -8,7 +8,7 @@ package config
 		public static const HALF_WIDTH:Number = STAGE_WIDTH * .5;
 		//Stars
 		public static const MAX_STARS:uint = 8000;
-		public static const MAX_STAR_SIZE:uint = 8;
+		public static const MAX_STAR_SIZE:uint = 6;
 		public static const MAX_STAR_SPEED:uint = 2;
 	}
 }

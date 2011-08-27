@@ -31,7 +31,7 @@ package
 			profilier = new Profiler();
 			_scaleMatrix = new Matrix();
 			canvas = new BitmapData(Settings.STAGE_WIDTH, Settings.STAGE_HEIGHT, true, 0);
-			starBitmapData = new BitmapData(Settings.MAX_STAR_SIZE, Settings.MAX_STAR_SIZE, true, 0);
+			starBitmapData = new BitmapData(Settings.MAX_STAR_SIZE, Settings.MAX_STAR_SIZE, false);
 			starBitmapData.draw(new StarGraphic(Settings.MAX_STAR_SIZE));
 			createStarPool();
 			addChild(new Bitmap(canvas));
@@ -80,10 +80,12 @@ package
 		{
 			var angle:Number = Math.random() * (Math.PI * 2);
 			var speed:Number = .1 + (Math.random() * Settings.MAX_STAR_SPEED);
-			star.velocity.x = Math.cos(angle) * speed;
-			star.velocity.y = Math.sin(angle) * speed;
+			var cos:Number = Math.cos(angle);
+			var sin:Number = Math.sin(angle);
+			star.velocity.x = cos * speed;
+			star.velocity.y = sin * speed;
 			star.size = (speed / Settings.MAX_STAR_SPEED) * Settings.MAX_STAR_SIZE;
-			star.position = new Point(Settings.HALF_WIDTH + (star.velocity.x * 75), Settings.HALF_HEIGHT + (star.velocity.y * 75));
+			star.position = new Point(Settings.HALF_WIDTH + (cos * ((speed - .3) * 100)), Settings.HALF_HEIGHT + (sin * ((speed - .3) * 100)));
 		}
 		
 		//try rect.contains
