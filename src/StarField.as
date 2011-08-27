@@ -23,14 +23,11 @@ package
 		public var canvas:BitmapData;
 		public var starBitmapData:BitmapData;
 		public var profilier:Profiler;
-		//
-		private var _scaleMatrix:Matrix;
 		
 		public function StarField()
 		{
 			profilier = new Profiler();
-			_scaleMatrix = new Matrix();
-			canvas = new BitmapData(Settings.STAGE_WIDTH, Settings.STAGE_HEIGHT, true, 0);
+			canvas = new BitmapData(Settings.STAGE_WIDTH, Settings.STAGE_HEIGHT, false);
 			starBitmapData = new BitmapData(Settings.MAX_STAR_SIZE, Settings.MAX_STAR_SIZE, false);
 			starBitmapData.draw(new StarGraphic(Settings.MAX_STAR_SIZE));
 			createStarPool();
@@ -85,17 +82,15 @@ package
 			star.velocity.x = cos * speed;
 			star.velocity.y = sin * speed;
 			star.size = (speed / Settings.MAX_STAR_SPEED) * Settings.MAX_STAR_SIZE;
-			star.position = new Point(Settings.HALF_WIDTH + (cos * ((speed - .3) * 100)), Settings.HALF_HEIGHT + (sin * ((speed - .3) * 100)));
+			star.position = new Point(Settings.HALF_WIDTH + (cos * ((speed - .3) * Settings.STAR_SPREAD)), Settings.HALF_HEIGHT + (sin * ((speed - .3) * Settings.STAR_SPREAD)));
 		}
 		
 		//try rect.contains
 		public function isOutOfBounds(star:Star):Boolean
 		{
-			const width:uint = Settings.STAGE_WIDTH;
-			const height:uint = Settings.STAGE_HEIGHT;
 			const x:Number = star.position.x;
 			const y:Number = star.position.y;
-			if (x > width || x < 0 || y > height || y < 0)
+			if (x > Settings.STAGE_WIDTH || x < 0 || y > Settings.STAGE_HEIGHT || y < 0)
 				return true;
 			return false;
 		}
