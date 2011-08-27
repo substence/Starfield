@@ -30,9 +30,13 @@ package
 		public var canvas:BitmapData;
 		public var profilier:Profiler;
 		public var doesBlur:Boolean;
+		public var bounds:Rectangle;
+		public var copyRectangle:Rectangle;
 		
 		public function StarField()
 		{
+			bounds = new Rectangle(0,0,Settings.STAGE_WIDTH, Settings.STAGE_HEIGHT);
+			copyRectangle = new Rectangle();
 			profilier = new Profiler();
 			canvas = new BitmapData(Settings.STAGE_WIDTH, Settings.STAGE_HEIGHT, false);
 			starBitmapData = new BitmapData(Settings.MAX_STAR_SIZE, Settings.MAX_STAR_SIZE, false);
@@ -44,12 +48,6 @@ package
 			stage.addEventListener(KeyboardEvent.KEY_UP, onKeyDown);
 		}
 		
-		protected function onKeyDown(event:KeyboardEvent):void
-		{
-			if (event.keyCode == Keyboard.B)
-				doesBlur = !doesBlur;
-		}
-		
 		private function createStarPool():void
 		{
 			var i:int = 0;
@@ -58,17 +56,11 @@ package
 			do 
 			{
 				var star:Star = new Star();
-				initializeStar(star);
+				resetStar(star);
 				previousStar.next = star;
 				previousStar = star;
 				i++
 			} while(i < Settings.MAX_STARS);
-		}
-		
-		public function onEnterFrame(event:Event):void
-		{
-			updateStars();
-			profilier.update();
 		}
 		
 		private function updateStars():void
@@ -78,10 +70,13 @@ package
 			var star:Star = entryStar;
 			while(star)
 			{
-				star.update();
-				if (isOutOfBounds(star))
-					initializeStar(star);
-				canvas.copyPixels(starBitmapData, new Rectangle(0,0, star.size, star.size), star.position);
+				var position:Point = star.position.add(star.velocity);
+				star.position = position;
+				if (!bounds.containsPoint(position))
+					resetStar(star);
+				copyRectangle.width = star.size; 
+				copyRectangle.height = star.size;
+				canvas.copyPixels(starBitmapData, copyRectangle, position);
 				star = star.next;
 			}
 			if (doesBlur)
@@ -89,7 +84,7 @@ package
 			canvas.unlock();
 		}
 		
-		private function initializeStar(star:Star):void
+		private function resetStar(star:Star):void
 		{
 			var angle:Number = Math.random() * MAX_RADIANS;
 			var random:Number = Math.random();
@@ -102,14 +97,16 @@ package
 			star.position = new Point(Settings.HALF_WIDTH + (cos * ((random - .1) * Settings.HALF_WIDTH)), Settings.HALF_HEIGHT + (sin * ((random - .1)* Settings.HALF_HEIGHT)));
 		}
 		
-		//try rect.contains
-		public function isOutOfBounds(star:Star):Boolean
+		private function onKeyDown(event:KeyboardEvent):void
 		{
-			const x:Number = star.position.x;
-			const y:Number = star.position.y;
-			if (x > Settings.STAGE_WIDTH || x < 0 || y > Settings.STAGE_HEIGHT || y < 0)
-				return true;
-			return false;
+			if (event.keyCode == Keyboard.B)
+				doesBlur = !doesBlur;
+		}
+		
+		private function onEnterFrame(event:Event):void
+		{
+			updateStars();
+			profilier.update();
 		}
 	}
 }

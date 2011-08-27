@@ -22,7 +22,8 @@ package utilities
 			textField.background = true;
 			textField.backgroundColor = 0x000000;
 			textField.autoSize = TextFieldAutoSize.LEFT;
-			textField.defaultTextFormat = new TextFormat(null, 18, 0xFFFFFF, true);
+			textField.selectable = false;
+			textField.defaultTextFormat = new TextFormat(null, 16, 0xFFFFFF, true);
 		}
 		
 		public function update():void

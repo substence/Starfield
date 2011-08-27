@@ -17,10 +17,5 @@ package entities
 			position = new Point();
 			velocity = new Point();
 		}
-		
-		public function update():void
-		{
-			position = position.add(velocity);
-		}
 	}
 }
