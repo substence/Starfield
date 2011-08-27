@@ -11,13 +11,13 @@ package utilities
 	public class Profiler
 	{
 		public var textField:TextField;
-		private var startTime:Number;
-		private var framesNumber:Number;
+		private var time:Number;
+		private var frames:Number;
 		
 		public function Profiler()
 		{
-			startTime = 0;
-			framesNumber = 0;
+			time = 0;
+			frames = 0;
 			textField = new TextField();
 			textField.background = true;
 			textField.backgroundColor = 0x000000;
@@ -27,15 +27,15 @@ package utilities
 		
 		public function update():void
 		{
-			var currentTime:Number = (getTimer() - startTime) / 1000;  
-			framesNumber++;  
-			if (currentTime > 1)  
+			var currentTime:Number = (getTimer() - time) / 1000;  
+			frames++;  
+			if (currentTime > 1) //lets do this only once a second
 			{  
 				textField.text = "Stars :" + Settings.MAX_STARS;
 				textField.appendText("\n" + "Memory :" + (System.totalMemory / 1024) / 1000);
-				textField.appendText("\n" + "Framerate :" + Math.floor((framesNumber/currentTime)*10.0)/10.0);
-				startTime = getTimer();  
-				framesNumber = 0;  
+				textField.appendText("\n" + "Framerate :" + Math.floor((frames / currentTime) * 10) / 10);
+				time = getTimer();  
+				frames = 0;  
 			}  
 		}
 	}

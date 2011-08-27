@@ -10,6 +10,5 @@ package config
 		public static const MAX_STARS:uint = 10000;
 		public static const MAX_STAR_SIZE:uint = 6;
 		public static const MAX_STAR_SPEED:uint = 2;
-		public static const STAR_SPREAD:uint = 125;
 	}
 }

@@ -10,19 +10,26 @@ package
 	import flash.display.BitmapData;
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.KeyboardEvent;
+	import flash.filters.BlurFilter;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import flash.ui.Keyboard;
 	
 	import utilities.Profiler;
 	
 	[SWF(width="640", height="480", frameRate="50", backgroundColor="#000000")]
 	public class StarField extends Sprite
 	{
+		public static const MAX_RADIANS:Number = Math.PI * 2;
+		//entry point to access the linked list
 		public var entryStar:Star;
-		public var canvas:BitmapData;
+		//the only instance of the star graphic
 		public var starBitmapData:BitmapData;
+		public var canvas:BitmapData;
 		public var profilier:Profiler;
+		public var doesBlur:Boolean;
 		
 		public function StarField()
 		{
@@ -34,12 +41,19 @@ package
 			addChild(new Bitmap(canvas));
 			addChild(profilier.textField);
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
+			stage.addEventListener(KeyboardEvent.KEY_UP, onKeyDown);
+		}
+		
+		protected function onKeyDown(event:KeyboardEvent):void
+		{
+			if (event.keyCode == Keyboard.B)
+				doesBlur = !doesBlur;
 		}
 		
 		private function createStarPool():void
 		{
 			var i:int = 0;
-			entryStar = new Star();;
+			entryStar = new Star();
 			var previousStar:Star = entryStar;
 			do 
 			{
@@ -69,20 +83,23 @@ package
 					initializeStar(star);
 				canvas.copyPixels(starBitmapData, new Rectangle(0,0, star.size, star.size), star.position);
 				star = star.next;
-			}	
+			}
+			if (doesBlur)
+				canvas.applyFilter(canvas, canvas.rect, new Point(), new BlurFilter());
 			canvas.unlock();
 		}
 		
 		private function initializeStar(star:Star):void
 		{
-			var angle:Number = Math.random() * (Math.PI * 2);
-			var speed:Number = .1 + (Math.random() * Settings.MAX_STAR_SPEED);
+			var angle:Number = Math.random() * MAX_RADIANS;
+			var random:Number = Math.random();
+			var speed:Number = .1 + (random * Settings.MAX_STAR_SPEED); //'.1' so stars dont get stuck at 0 speed
 			var cos:Number = Math.cos(angle);
 			var sin:Number = Math.sin(angle);
 			star.velocity.x = cos * speed;
 			star.velocity.y = sin * speed;
-			star.size = (speed / Settings.MAX_STAR_SPEED) * Settings.MAX_STAR_SIZE;
-			star.position = new Point(Settings.HALF_WIDTH + (cos * ((speed - .3) * Settings.STAR_SPREAD)), Settings.HALF_HEIGHT + (sin * ((speed - .3) * Settings.STAR_SPREAD)));
+			star.size = random * Settings.MAX_STAR_SIZE;
+			star.position = new Point(Settings.HALF_WIDTH + (cos * ((random - .1) * Settings.HALF_WIDTH)), Settings.HALF_HEIGHT + (sin * ((random - .1)* Settings.HALF_HEIGHT)));
 		}
 		
 		//try rect.contains

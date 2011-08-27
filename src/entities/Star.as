@@ -7,14 +7,14 @@ package entities
 	public class Star
 	{
 		public var position:Point;
-		public var size:uint;
+		public var size:Number;
 		public var velocity:Point;
 		public var next:Star;//works as a psuedo linked-list
 		
 		public function Star()
 		{
-			position = new Point();
 			size = 0;
+			position = new Point();
 			velocity = new Point();
 		}
 		
